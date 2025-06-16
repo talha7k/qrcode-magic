@@ -206,8 +206,8 @@ const QRGenerator = () => {
             </div>
 
             {/* Horizontal Scrollable Cards */}
-            <div className="overflow-x-auto pb-4">
-              <div className="flex gap-4 min-w-max px-2">
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex gap-6 min-w-max px-4 py-2">
                 {qrTypes.map((type) => (
                   <QRTypeCard
                     key={type.id}
@@ -293,6 +293,16 @@ const QRGenerator = () => {
           </p>
         </div>
       </div>
+
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 };

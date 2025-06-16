@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 
 interface TextQRFormProps {
@@ -22,16 +22,17 @@ const TextQRForm: React.FC<TextQRFormProps> = ({ onGenerate }) => {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="text">Text Content</Label>
-        <Input
+        <Textarea
           id="text"
-          type="text"
-          placeholder="Enter any text..."
+          placeholder="Enter any text...
+Press Enter for new lines"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="text-lg py-3 px-4"
+          className="text-lg py-3 px-4 min-h-[120px] resize-none"
+          rows={5}
         />
         <p className="text-sm text-gray-500">
-          Enter any text to convert into a QR code
+          Enter any text to convert into a QR code. Press Enter for new lines.
         </p>
       </div>
     </div>
