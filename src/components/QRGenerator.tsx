@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { QrCode, Download, Copy, Check, Type, Globe, User, Wifi, MessageSquare, Mail } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { QrCode, Download, Copy, Check, Type, Globe, User, Wifi, MessageSquare, Mail, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import QRTypeCard from './QRTypeCard';
 import TextQRForm from './qr-forms/TextQRForm';
@@ -18,6 +19,7 @@ const QRGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeType, setActiveType] = useState('text');
+  const [resolution, setResolution] = useState('256');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
 
@@ -60,6 +62,13 @@ const QRGenerator = () => {
     }
   ];
 
+  const resolutionOptions = [
+    { value: '128', label: '128x128 (Small)' },
+    { value: '256', label: '256x256 (Medium)' },
+    { value: '512', label: '512x512 (Large)' },
+    { value: '1024', label: '1024x1024 (Extra Large)' }
+  ];
+
   const generateQR = async (inputText: string) => {
     if (!inputText.trim()) {
       setQrDataUrl('');
@@ -70,8 +79,9 @@ const QRGenerator = () => {
     try {
       const canvas = canvasRef.current;
       if (canvas) {
+        const size = parseInt(resolution);
         await QRCode.toCanvas(canvas, inputText, {
-          width: 256,
+          width: size,
           margin: 2,
           color: {
             dark: '#1a1a1a',
@@ -79,7 +89,7 @@ const QRGenerator = () => {
           }
         });
         
-        const dataUrl = canvas.toDataURL();
+        const dataUrl = canvas.toDataURL('image/png');
         setQrDataUrl(dataUrl);
       }
     } catch (error) {
@@ -98,13 +108,13 @@ const QRGenerator = () => {
     if (!qrDataUrl) return;
     
     const link = document.createElement('a');
-    link.download = `qr-code-${activeType}.png`;
+    link.download = `qr-code-${activeType}-${resolution}x${resolution}.png`;
     link.href = qrDataUrl;
     link.click();
     
     toast({
       title: "Downloaded!",
-      description: "QR code has been saved to your device.",
+      description: `QR code (${resolution}x${resolution}) has been saved as PNG.`,
     });
   };
 
@@ -123,7 +133,7 @@ const QRGenerator = () => {
       
       toast({
         title: "Copied!",
-        description: "QR code has been copied to clipboard.",
+        description: "QR code has been copied to clipboard as PNG.",
       });
     } catch (error) {
       console.error('Error copying to clipboard:', error);
@@ -174,6 +184,27 @@ const QRGenerator = () => {
             <CardTitle className="text-xl text-gray-800 text-center">Choose QR Code Type</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
+            {/* Resolution Selector */}
+            <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center gap-2">
+                <Settings className="w-4 h-4 text-gray-600" />
+                <span className="text-sm font-medium text-gray-700">Resolution:</span>
+              </div>
+              <Select value={resolution} onValueChange={setResolution}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Select resolution" />
+                </SelectTrigger>
+                <SelectContent>
+                  {resolutionOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-xs text-gray-500">PNG format</span>
+            </div>
+
             {/* Horizontal Scrollable Cards */}
             <div className="overflow-x-auto pb-4">
               <div className="flex gap-4 min-w-max px-2">
@@ -203,8 +234,9 @@ const QRGenerator = () => {
                     className={`border-2 border-gray-200 rounded-lg transition-all duration-300 ${
                       qrDataUrl ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                     }`}
-                    width={256}
-                    height={256}
+                    width={parseInt(resolution)}
+                    height={parseInt(resolution)}
+                    style={{ maxWidth: '256px', maxHeight: '256px', width: 'auto', height: 'auto' }}
                   />
                   {isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-lg">
@@ -212,10 +244,11 @@ const QRGenerator = () => {
                     </div>
                   )}
                   {!qrDataUrl && !isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300" style={{ width: '256px', height: '256px' }}>
                       <div className="text-center text-gray-400">
                         <QrCode className="w-12 h-12 mx-auto mb-2 opacity-50" />
                         <p>Fill the form to generate QR code</p>
+                        <p className="text-xs mt-1">{resolution}x{resolution} PNG</p>
                       </div>
                     </div>
                   )}
@@ -228,7 +261,7 @@ const QRGenerator = () => {
                       className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      Download
+                      Download PNG
                     </Button>
                     <Button
                       onClick={copyToClipboard}
@@ -243,7 +276,7 @@ const QRGenerator = () => {
                       ) : (
                         <>
                           <Copy className="w-4 h-4 mr-2" />
-                          Copy
+                          Copy PNG
                         </>
                       )}
                     </Button>
@@ -256,7 +289,7 @@ const QRGenerator = () => {
 
         <div className="text-center mt-8 text-gray-500">
           <p className="text-sm">
-            Generate QR codes for any purpose - share instantly and securely!
+            Generate high-quality PNG QR codes for any purpose - share instantly and securely!
           </p>
         </div>
       </div>
