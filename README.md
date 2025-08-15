@@ -1,18 +1,18 @@
-# Welcome to your Lovable project
+# Welcome to your Dijitize.com project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/f6dc0e9f-bc64-45eb-a9c3-bac335bc2e33
+**URL**: https://dijitize.com
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use Dijitize.com**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f6dc0e9f-bc64-45eb-a9c3-bac335bc2e33) and start prompting.
+Simply visit the [Dijitize.com Project](https://dijitize.com) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made via Dijitize.com will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
@@ -62,12 +62,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/f6dc0e9f-bc64-45eb-a9c3-bac335bc2e33) and click on Share -> Publish.
+Simply open [Dijitize.com](https://dijitize.com) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my Dijitize.com project?
 
 Yes, you can!
 
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+ 
