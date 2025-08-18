@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 import { QrCode, Download, Copy, Check, Type, Globe, User, Wifi, MessageSquare, Mail, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import QRTypeCard from './QRTypeCard';
@@ -23,6 +24,8 @@ const QRGenerator = () => {
   const [activeType, setActiveType] = useState('text');
   const [resolution, setResolution] = useState('256');
   const [logoSpace, setLogoSpace] = useState(false);
+  const [logoSize, setLogoSize] = useState([20]); // Percentage of QR code size
+  const [logoShape, setLogoShape] = useState('circle'); // 'circle' or 'square'
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
 
@@ -99,12 +102,20 @@ const QRGenerator = () => {
           if (ctx) {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const logoSize = Math.min(canvas.width, canvas.height) * 0.2; // 20% of canvas size
+            const logoSizePixels = Math.min(canvas.width, canvas.height) * (logoSize[0] / 100);
             
             // Clear the center area
             ctx.globalCompositeOperation = 'destination-out';
             ctx.beginPath();
-            ctx.arc(centerX, centerY, logoSize / 2, 0, 2 * Math.PI);
+            
+            if (logoShape === 'circle') {
+              ctx.arc(centerX, centerY, logoSizePixels / 2, 0, 2 * Math.PI);
+            } else {
+              // Square shape
+              const halfSize = logoSizePixels / 2;
+              ctx.rect(centerX - halfSize, centerY - halfSize, logoSizePixels, logoSizePixels);
+            }
+            
             ctx.fill();
             
             // Reset composite operation
@@ -245,6 +256,54 @@ const QRGenerator = () => {
                 </span>
               </div>
             </div>
+            
+            {/* Logo Customization Controls */}
+            {logoSpace && (
+              <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Logo Space Customization</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Logo Size Slider */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">
+                      Size: {logoSize[0]}% of QR code
+                    </Label>
+                    <Slider
+                      value={logoSize}
+                      onValueChange={setLogoSize}
+                      max={40}
+                      min={10}
+                      step={1}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500">
+                      <span>10%</span>
+                      <span>40%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Logo Shape Selector */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">
+                      Shape
+                    </Label>
+                    <Select value={logoShape} onValueChange={setLogoShape}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select shape" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="circle">Circle</SelectItem>
+                        <SelectItem value="square">Square</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-600 bg-blue-50 p-3 rounded border-l-4 border-blue-400">
+                  <strong>Tip:</strong> Use a graphics editor to add your logo to the transparent center area after downloading the QR code.
+                </div>
+              </div>
+            )}
 
             {/* Horizontal Scrollable Cards */}
             <div className="overflow-x-auto scrollbar-hide">
