@@ -154,7 +154,7 @@ const QRGenerator = () => {
         const qrOptions = {
           width: size,
           margin: 2,
-          errorCorrectionLevel: logoSpace ? 'H' : 'M', // High error correction for logo space
+          errorCorrectionLevel: logoSpace ? 'M' : 'L', // Medium error correction for logo space
           color: {
             dark: '#000000'
             // No light color specified for transparent background
