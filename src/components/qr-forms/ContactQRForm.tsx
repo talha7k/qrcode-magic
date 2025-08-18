@@ -17,6 +17,12 @@ interface PhoneNumber {
   type: string;
 }
 
+interface Email {
+  id: string;
+  address: string;
+  type: string;
+}
+
 interface Address {
   id: string;
   street: string;
@@ -24,13 +30,14 @@ interface Address {
   state: string;
   zip: string;
   country: string;
+  type: string;
 }
 
 const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onFormDataChange }) => {
   const [contact, setContact] = useState({
     firstName: formData?.firstName || '',
     lastName: formData?.lastName || '',
-    email: formData?.email || '',
+    jobTitle: formData?.jobTitle || '',
     organization: formData?.organization || '',
     website: formData?.website || ''
   });
@@ -39,26 +46,33 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
     formData?.phoneNumbers || [{ id: '1', number: '', type: 'CELL' }]
   );
   
+  const [emails, setEmails] = useState<Email[]>(
+    formData?.emails || [{ id: '1', address: '', type: 'WORK' }]
+  );
+  
   const [addresses, setAddresses] = useState<Address[]>(
-    formData?.addresses || [{ id: '1', street: '', city: '', state: '', zip: '', country: '' }]
+    formData?.addresses || [{ id: '1', street: '', city: '', state: '', zip: '', country: '', type: 'HOME' }]
   );
 
   // Sync with parent form data
   useEffect(() => {
     if (formData) {
       if (formData.firstName !== contact.firstName || formData.lastName !== contact.lastName ||
-          formData.email !== contact.email || formData.organization !== contact.organization ||
+          formData.jobTitle !== contact.jobTitle || formData.organization !== contact.organization ||
           formData.website !== contact.website) {
         setContact({
           firstName: formData.firstName || '',
           lastName: formData.lastName || '',
-          email: formData.email || '',
+          jobTitle: formData.jobTitle || '',
           organization: formData.organization || '',
           website: formData.website || ''
         });
       }
       if (formData.phoneNumbers && JSON.stringify(formData.phoneNumbers) !== JSON.stringify(phoneNumbers)) {
         setPhoneNumbers(formData.phoneNumbers);
+      }
+      if (formData.emails && JSON.stringify(formData.emails) !== JSON.stringify(emails)) {
+        setEmails(formData.emails);
       }
       if (formData.addresses && JSON.stringify(formData.addresses) !== JSON.stringify(addresses)) {
         setAddresses(formData.addresses);
@@ -68,8 +82,13 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      if (contact.firstName || contact.lastName || phoneNumbers.some(p => p.number) || contact.email) {
+      if (contact.firstName || contact.lastName || phoneNumbers.some(p => p.number) || emails.some(e => e.address)) {
         let vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.firstName} ${contact.lastName}\nN:${contact.lastName};${contact.firstName};;;\n`;
+        
+        // Add job title
+        if (contact.jobTitle.trim()) {
+          vcard += `TITLE:${contact.jobTitle}\n`;
+        }
         
         // Add phone numbers
         phoneNumbers.forEach(phone => {
@@ -78,10 +97,12 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
           }
         });
         
-        // Add email
-        if (contact.email.trim()) {
-          vcard += `EMAIL:${contact.email}\n`;
-        }
+        // Add emails
+        emails.forEach(email => {
+          if (email.address.trim()) {
+            vcard += `EMAIL;TYPE=${email.type}:${email.address}\n`;
+          }
+        });
         
         // Add organization
         if (contact.organization.trim()) {
@@ -96,7 +117,7 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
         // Add addresses
         addresses.forEach(address => {
           if (address.street || address.city || address.state || address.zip || address.country) {
-            vcard += `ADR:;;${address.street};${address.city};${address.state};${address.zip};${address.country}\n`;
+            vcard += `ADR;TYPE=${address.type}:;;${address.street};${address.city};${address.state};${address.zip};${address.country}\n`;
           }
         });
         
@@ -107,12 +128,12 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
       }
       
       if (onFormDataChange) {
-        onFormDataChange({ ...contact, phoneNumbers, addresses });
+        onFormDataChange({ ...contact, phoneNumbers, emails, addresses });
       }
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [contact, phoneNumbers, addresses, onGenerate, onFormDataChange]);
+  }, [contact, phoneNumbers, emails, addresses, onGenerate, onFormDataChange]);
 
   const updateContact = (field: string, value: string) => {
     setContact(prev => ({ ...prev, [field]: value }));
@@ -135,9 +156,26 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
     ));
   };
   
+  const addEmail = () => {
+    const newId = Date.now().toString();
+    setEmails(prev => [...prev, { id: newId, address: '', type: 'WORK' }]);
+  };
+  
+  const removeEmail = (id: string) => {
+    if (emails.length > 1) {
+      setEmails(prev => prev.filter(email => email.id !== id));
+    }
+  };
+  
+  const updateEmail = (id: string, field: string, value: string) => {
+    setEmails(prev => prev.map(email => 
+      email.id === id ? { ...email, [field]: value } : email
+    ));
+  };
+  
   const addAddress = () => {
     const newId = Date.now().toString();
-    setAddresses(prev => [...prev, { id: newId, street: '', city: '', state: '', zip: '', country: '' }]);
+    setAddresses(prev => [...prev, { id: newId, street: '', city: '', state: '', zip: '', country: '', type: 'HOME' }]);
   };
   
   const removeAddress = (id: string) => {
@@ -227,14 +265,63 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="jobTitle">Job Title</Label>
         <Input
-          id="email"
-          type="email"
-          placeholder="john@example.com"
-          value={contact.email}
-          onChange={(e) => updateContact('email', e.target.value)}
+          id="jobTitle"
+          placeholder="Software Engineer"
+          value={contact.jobTitle}
+          onChange={(e) => updateContact('jobTitle', e.target.value)}
         />
+      </div>
+      
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label>Email Addresses</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addEmail}
+            className="flex items-center gap-1"
+          >
+            <Plus className="w-4 h-4" />
+            Add Email
+          </Button>
+        </div>
+        {emails.map((email, index) => (
+          <div key={email.id} className="flex gap-2 items-end">
+            <div className="flex-1">
+              <Input
+                type="email"
+                placeholder="john@example.com"
+                value={email.address}
+                onChange={(e) => updateEmail(email.id, 'address', e.target.value)}
+              />
+            </div>
+            <div className="w-24">
+              <select
+                value={email.type}
+                onChange={(e) => updateEmail(email.id, 'type', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              >
+                <option value="WORK">Work</option>
+                <option value="HOME">Home</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            {emails.length > 1 && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => removeEmail(email.id)}
+                className="px-2"
+              >
+                <Minus className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+        ))}
       </div>
       
       <div className="space-y-2">
@@ -274,7 +361,18 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
         {addresses.map((address, index) => (
           <div key={address.id} className="space-y-2 p-4 border rounded-lg">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">Address {index + 1}</Label>
+              <div className="flex items-center gap-2">
+                <Label className="text-sm font-medium">Address {index + 1}</Label>
+                <select
+                  value={address.type}
+                  onChange={(e) => updateAddress(address.id, 'type', e.target.value)}
+                  className="px-2 py-1 border border-gray-300 rounded text-xs"
+                >
+                  <option value="HOME">Home</option>
+                  <option value="WORK">Work</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
               {addresses.length > 1 && (
                 <Button
                   type="button"
@@ -321,7 +419,7 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
       </div>
       
       <p className="text-sm text-gray-500">
-        Fill in contact details to generate a vCard QR code. Use the + buttons to add multiple phone numbers and addresses.
+        Fill in contact details to generate a vCard QR code. Use the + buttons to add multiple phone numbers, emails, and addresses. Select types for better organization.
       </p>
     </div>
   );
