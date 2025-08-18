@@ -5,10 +5,19 @@ import { Label } from '@/components/ui/label';
 
 interface URLQRFormProps {
   onGenerate: (url: string) => void;
+  formData?: any;
+  onFormDataChange?: (data: any) => void;
 }
 
-const URLQRForm: React.FC<URLQRFormProps> = ({ onGenerate }) => {
-  const [url, setUrl] = useState('');
+const URLQRForm: React.FC<URLQRFormProps> = ({ onGenerate, formData, onFormDataChange }) => {
+  const [url, setUrl] = useState(formData?.url || '');
+
+  // Sync with parent form data
+  useEffect(() => {
+    if (formData?.url !== undefined && formData.url !== url) {
+      setUrl(formData.url);
+    }
+  }, [formData]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -17,13 +26,19 @@ const URLQRForm: React.FC<URLQRFormProps> = ({ onGenerate }) => {
           ? url 
           : `https://${url}`;
         onGenerate(formattedUrl);
+        if (onFormDataChange) {
+          onFormDataChange({ url });
+        }
       } else {
         onGenerate('');
+        if (onFormDataChange) {
+          onFormDataChange({ url: '' });
+        }
       }
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [url, onGenerate]);
+  }, [url, onGenerate, onFormDataChange]);
 
   return (
     <div className="space-y-4">

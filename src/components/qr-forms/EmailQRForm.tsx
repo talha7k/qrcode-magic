@@ -5,14 +5,27 @@ import { Label } from '@/components/ui/label';
 
 interface EmailQRFormProps {
   onGenerate: (email: string) => void;
+  formData?: any;
+  onFormDataChange?: (data: any) => void;
 }
 
-const EmailQRForm: React.FC<EmailQRFormProps> = ({ onGenerate }) => {
+const EmailQRForm: React.FC<EmailQRFormProps> = ({ onGenerate, formData, onFormDataChange }) => {
   const [email, setEmail] = useState({
-    to: '',
-    subject: '',
-    body: ''
+    to: formData?.to || '',
+    subject: formData?.subject || '',
+    body: formData?.body || ''
   });
+
+  // Sync with parent form data
+  useEffect(() => {
+    if (formData && (formData.to !== email.to || formData.subject !== email.subject || formData.body !== email.body)) {
+      setEmail({
+        to: formData.to || '',
+        subject: formData.subject || '',
+        body: formData.body || ''
+      });
+    }
+  }, [formData]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -22,10 +35,14 @@ const EmailQRForm: React.FC<EmailQRFormProps> = ({ onGenerate }) => {
       } else {
         onGenerate('');
       }
+      
+      if (onFormDataChange) {
+        onFormDataChange(email);
+      }
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [email, onGenerate]);
+  }, [email, onGenerate, onFormDataChange]);
 
   const updateEmail = (field: string, value: string) => {
     setEmail(prev => ({ ...prev, [field]: value }));

@@ -5,13 +5,25 @@ import { Label } from '@/components/ui/label';
 
 interface SMSQRFormProps {
   onGenerate: (sms: string) => void;
+  formData?: any;
+  onFormDataChange?: (data: any) => void;
 }
 
-const SMSQRForm: React.FC<SMSQRFormProps> = ({ onGenerate }) => {
+const SMSQRForm: React.FC<SMSQRFormProps> = ({ onGenerate, formData, onFormDataChange }) => {
   const [sms, setSms] = useState({
-    phone: '',
-    message: ''
+    phone: formData?.phone || '',
+    message: formData?.message || ''
   });
+
+  // Sync with parent form data
+  useEffect(() => {
+    if (formData && (formData.phone !== sms.phone || formData.message !== sms.message)) {
+      setSms({
+        phone: formData.phone || '',
+        message: formData.message || ''
+      });
+    }
+  }, [formData]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -21,10 +33,14 @@ const SMSQRForm: React.FC<SMSQRFormProps> = ({ onGenerate }) => {
       } else {
         onGenerate('');
       }
+      
+      if (onFormDataChange) {
+        onFormDataChange(sms);
+      }
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [sms, onGenerate]);
+  }, [sms, onGenerate, onFormDataChange]);
 
   const updateSms = (field: string, value: string) => {
     setSms(prev => ({ ...prev, [field]: value }));

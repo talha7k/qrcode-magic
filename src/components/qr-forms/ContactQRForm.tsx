@@ -7,6 +7,8 @@ import { Plus, Minus } from 'lucide-react';
 
 interface ContactQRFormProps {
   onGenerate: (vcard: string) => void;
+  formData?: any;
+  onFormDataChange?: (data: any) => void;
 }
 
 interface PhoneNumber {
@@ -24,22 +26,45 @@ interface Address {
   country: string;
 }
 
-const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate }) => {
+const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onFormDataChange }) => {
   const [contact, setContact] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    organization: '',
-    website: ''
+    firstName: formData?.firstName || '',
+    lastName: formData?.lastName || '',
+    email: formData?.email || '',
+    organization: formData?.organization || '',
+    website: formData?.website || ''
   });
   
-  const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumber[]>([
-    { id: '1', number: '', type: 'CELL' }
-  ]);
+  const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumber[]>(
+    formData?.phoneNumbers || [{ id: '1', number: '', type: 'CELL' }]
+  );
   
-  const [addresses, setAddresses] = useState<Address[]>([
-    { id: '1', street: '', city: '', state: '', zip: '', country: '' }
-  ]);
+  const [addresses, setAddresses] = useState<Address[]>(
+    formData?.addresses || [{ id: '1', street: '', city: '', state: '', zip: '', country: '' }]
+  );
+
+  // Sync with parent form data
+  useEffect(() => {
+    if (formData) {
+      if (formData.firstName !== contact.firstName || formData.lastName !== contact.lastName ||
+          formData.email !== contact.email || formData.organization !== contact.organization ||
+          formData.website !== contact.website) {
+        setContact({
+          firstName: formData.firstName || '',
+          lastName: formData.lastName || '',
+          email: formData.email || '',
+          organization: formData.organization || '',
+          website: formData.website || ''
+        });
+      }
+      if (formData.phoneNumbers && JSON.stringify(formData.phoneNumbers) !== JSON.stringify(phoneNumbers)) {
+        setPhoneNumbers(formData.phoneNumbers);
+      }
+      if (formData.addresses && JSON.stringify(formData.addresses) !== JSON.stringify(addresses)) {
+        setAddresses(formData.addresses);
+      }
+    }
+  }, [formData]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -80,10 +105,14 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate }) => {
       } else {
         onGenerate('');
       }
+      
+      if (onFormDataChange) {
+        onFormDataChange({ ...contact, phoneNumbers, addresses });
+      }
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [contact, phoneNumbers, addresses, onGenerate]);
+  }, [contact, phoneNumbers, addresses, onGenerate, onFormDataChange]);
 
   const updateContact = (field: string, value: string) => {
     setContact(prev => ({ ...prev, [field]: value }));

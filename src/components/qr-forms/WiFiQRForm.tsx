@@ -7,15 +7,30 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 interface WiFiQRFormProps {
   onGenerate: (wifiString: string) => void;
+  formData?: any;
+  onFormDataChange?: (data: any) => void;
 }
 
-const WiFiQRForm: React.FC<WiFiQRFormProps> = ({ onGenerate }) => {
+const WiFiQRForm: React.FC<WiFiQRFormProps> = ({ onGenerate, formData, onFormDataChange }) => {
   const [wifi, setWifi] = useState({
-    ssid: '',
-    password: '',
-    security: 'WPA',
-    hidden: false
+    ssid: formData?.ssid || '',
+    password: formData?.password || '',
+    security: formData?.security || 'WPA',
+    hidden: formData?.hidden || false
   });
+
+  // Sync with parent form data
+  useEffect(() => {
+    if (formData && (formData.ssid !== wifi.ssid || formData.password !== wifi.password ||
+        formData.security !== wifi.security || formData.hidden !== wifi.hidden)) {
+      setWifi({
+        ssid: formData.ssid || '',
+        password: formData.password || '',
+        security: formData.security || 'WPA',
+        hidden: formData.hidden || false
+      });
+    }
+  }, [formData]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -25,10 +40,14 @@ const WiFiQRForm: React.FC<WiFiQRFormProps> = ({ onGenerate }) => {
       } else {
         onGenerate('');
       }
+      
+      if (onFormDataChange) {
+        onFormDataChange(wifi);
+      }
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [wifi, onGenerate]);
+  }, [wifi, onGenerate, onFormDataChange]);
 
   const updateWifi = (field: string, value: string | boolean) => {
     setWifi(prev => ({ ...prev, [field]: value }));

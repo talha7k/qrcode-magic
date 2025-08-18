@@ -7,8 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { QrCode, Download, Copy, Check, Type, Globe, User, Wifi, MessageSquare, Mail, Settings } from 'lucide-react';
+import { QrCode, Download, Copy, Check, Type, Globe, User, Wifi, MessageSquare, Mail, Settings, Save, FolderOpen, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { storage, QREntry, QRSettings, SessionData } from '@/lib/storage';
 import QRTypeCard from './QRTypeCard';
 import TextQRForm from './qr-forms/TextQRForm';
 import URLQRForm from './qr-forms/URLQRForm';
@@ -31,6 +32,57 @@ const QRGenerator = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
   const [currentQRData, setCurrentQRData] = useState('');
+  
+  // Saved entries state
+  const [savedEntries, setSavedEntries] = useState<QREntry[]>([]);
+  const [currentFormData, setCurrentFormData] = useState<any>({});
+  const [showSavedEntries, setShowSavedEntries] = useState(false);
+
+  // Load saved data on component mount
+  useEffect(() => {
+    const loadSavedData = () => {
+      // Load saved entries
+      const entries = storage.getSavedEntries();
+      setSavedEntries(entries);
+      
+      // Load session data
+      const sessionData = storage.getSessionData();
+      if (sessionData) {
+        setActiveType(sessionData.activeType);
+        setCurrentFormData(sessionData.currentFormData);
+        
+        // Load settings
+        if (sessionData.settings) {
+          setResolution(sessionData.settings.resolution);
+          setLogoSpace(sessionData.settings.logoSpace);
+          setLogoSize(sessionData.settings.logoSize);
+          setLogoShape(sessionData.settings.logoShape);
+          setShowBorder(sessionData.settings.showBorder);
+          setBorderThickness(sessionData.settings.borderThickness);
+        }
+      }
+    };
+    
+    loadSavedData();
+  }, []);
+  
+  // Auto-save session data
+  useEffect(() => {
+    const sessionData: SessionData = {
+      activeType,
+      currentFormData,
+      settings: {
+        resolution,
+        logoSpace,
+        logoSize,
+        logoShape,
+        showBorder,
+        borderThickness
+      }
+    };
+    
+    storage.saveSessionData(sessionData);
+  }, [activeType, currentFormData, resolution, logoSpace, logoSize, logoShape, showBorder, borderThickness]);
 
   // Regenerate QR code when logo settings change
   useEffect(() => {
@@ -227,23 +279,95 @@ const QRGenerator = () => {
       });
     }
   };
+  
+  // Save current entry
+  const saveCurrentEntry = () => {
+    if (!currentQRData || !currentFormData) {
+      toast({
+        title: "Nothing to save",
+        description: "Please fill out the form and generate a QR code first.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const entryName = prompt('Enter a name for this QR code:');
+    if (!entryName) return;
+    
+    try {
+      const newEntry = storage.saveEntry({
+        name: entryName,
+        type: activeType,
+        data: currentFormData
+      });
+      
+      setSavedEntries(prev => [...prev, newEntry]);
+      
+      toast({
+        title: "Saved!",
+        description: `QR code "${entryName}" has been saved.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save QR code. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  // Load saved entry
+  const loadSavedEntry = (entry: QREntry) => {
+    setActiveType(entry.type);
+    setCurrentFormData(entry.data);
+    setShowSavedEntries(false);
+    
+    toast({
+      title: "Loaded!",
+      description: `QR code "${entry.name}" has been loaded.`,
+    });
+  };
+  
+  // Delete saved entry
+  const deleteSavedEntry = (entryId: string) => {
+    if (confirm('Are you sure you want to delete this saved QR code?')) {
+      storage.deleteEntry(entryId);
+      setSavedEntries(prev => prev.filter(entry => entry.id !== entryId));
+      
+      toast({
+        title: "Deleted!",
+        description: "Saved QR code has been deleted.",
+      });
+    }
+  };
+  
+  // Get saved entries for current type
+  const getCurrentTypeSavedEntries = () => {
+    return savedEntries.filter(entry => entry.type === activeType);
+  };
 
   const renderForm = () => {
+    const formProps = {
+      onGenerate: generateQR,
+      formData: currentFormData,
+      onFormDataChange: setCurrentFormData
+    };
+    
     switch (activeType) {
       case 'text':
-        return <TextQRForm onGenerate={generateQR} />;
+        return <TextQRForm {...formProps} />;
       case 'url':
-        return <URLQRForm onGenerate={generateQR} />;
+        return <URLQRForm {...formProps} />;
       case 'contact':
-        return <ContactQRForm onGenerate={generateQR} />;
+        return <ContactQRForm {...formProps} />;
       case 'wifi':
-        return <WiFiQRForm onGenerate={generateQR} />;
+        return <WiFiQRForm {...formProps} />;
       case 'sms':
-        return <SMSQRForm onGenerate={generateQR} />;
+        return <SMSQRForm {...formProps} />;
       case 'email':
-        return <EmailQRForm onGenerate={generateQR} />;
+        return <EmailQRForm {...formProps} />;
       default:
-        return <TextQRForm onGenerate={generateQR} />;
+        return <TextQRForm {...formProps} />;
     }
   };
 
@@ -405,6 +529,69 @@ const QRGenerator = () => {
                   />
                 ))}
               </div>
+            </div>
+
+            {/* Saved Entries Management */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-800">Saved {qrTypes.find(t => t.id === activeType)?.title} QR Codes</h3>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={saveCurrentEntry}
+                    variant="outline"
+                    size="sm"
+                    className="border-green-200 hover:border-green-400 hover:bg-green-50"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Current
+                  </Button>
+                  <Button
+                    onClick={() => setShowSavedEntries(!showSavedEntries)}
+                    variant="outline"
+                    size="sm"
+                    className="border-blue-200 hover:border-blue-400 hover:bg-blue-50"
+                  >
+                    <FolderOpen className="w-4 h-4 mr-2" />
+                    {showSavedEntries ? 'Hide' : 'Show'} Saved ({getCurrentTypeSavedEntries().length})
+                  </Button>
+                </div>
+              </div>
+              
+              {showSavedEntries && (
+                <div className="bg-gray-50 rounded-lg p-4">
+                  {getCurrentTypeSavedEntries().length === 0 ? (
+                    <p className="text-gray-500 text-center py-4">No saved {qrTypes.find(t => t.id === activeType)?.title.toLowerCase()} QR codes yet.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {getCurrentTypeSavedEntries().map((entry) => (
+                        <div key={entry.id} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-purple-300 transition-colors">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-medium text-gray-800 truncate">{entry.name}</h4>
+                            <Button
+                              onClick={() => deleteSavedEntry(entry.id)}
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          <p className="text-xs text-gray-500 mb-3">
+                            Created: {new Date(entry.createdAt).toLocaleDateString()}
+                          </p>
+                          <Button
+                            onClick={() => loadSavedEntry(entry)}
+                            size="sm"
+                            className="w-full bg-purple-600 hover:bg-purple-700"
+                          >
+                            Load
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Form and QR Code Display */}
