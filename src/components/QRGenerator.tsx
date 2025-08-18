@@ -4,6 +4,8 @@ import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { QrCode, Download, Copy, Check, Type, Globe, User, Wifi, MessageSquare, Mail, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import QRTypeCard from './QRTypeCard';
@@ -20,6 +22,7 @@ const QRGenerator = () => {
   const [copied, setCopied] = useState(false);
   const [activeType, setActiveType] = useState('text');
   const [resolution, setResolution] = useState('256');
+  const [logoSpace, setLogoSpace] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
 
@@ -83,11 +86,31 @@ const QRGenerator = () => {
         await QRCode.toCanvas(canvas, inputText, {
           width: size,
           margin: 2,
+          errorCorrectionLevel: logoSpace ? 'H' : 'M',
           color: {
             dark: '#1a1a1a',
             light: '#ffffff'
           }
         });
+        
+        // If logo space is enabled, create a transparent center area
+        if (logoSpace) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const logoSize = Math.min(canvas.width, canvas.height) * 0.2; // 20% of canvas size
+            
+            // Clear the center area
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, logoSize / 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Reset composite operation
+            ctx.globalCompositeOperation = 'source-over';
+          }
+        }
         
         const dataUrl = canvas.toDataURL('image/png');
         setQrDataUrl(dataUrl);
@@ -184,25 +207,43 @@ const QRGenerator = () => {
             <CardTitle className="text-xl text-gray-800 text-center">Choose QR Code Type</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
-            {/* Resolution Selector */}
-            <div className="flex items-center justify-center gap-4">
-              <div className="flex items-center gap-2">
-                <Settings className="w-4 h-4 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700">Resolution:</span>
+            {/* Settings */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              {/* Resolution Selector */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm font-medium text-gray-700">Resolution:</span>
+                </div>
+                <Select value={resolution} onValueChange={setResolution}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Select resolution" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {resolutionOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <span className="text-xs text-gray-500">PNG format</span>
               </div>
-              <Select value={resolution} onValueChange={setResolution}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Select resolution" />
-                </SelectTrigger>
-                <SelectContent>
-                  {resolutionOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <span className="text-xs text-gray-500">PNG format</span>
+              
+              {/* Logo Space Toggle */}
+              <div className="flex items-center gap-3">
+                <Label htmlFor="logo-space" className="text-sm font-medium text-gray-700">
+                  Logo Space:
+                </Label>
+                <Switch
+                  id="logo-space"
+                  checked={logoSpace}
+                  onCheckedChange={setLogoSpace}
+                />
+                <span className="text-xs text-gray-500">
+                  {logoSpace ? 'Center cleared for logo' : 'Standard QR code'}
+                </span>
+              </div>
             </div>
 
             {/* Horizontal Scrollable Cards */}
