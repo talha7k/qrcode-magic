@@ -28,6 +28,14 @@ const QRGenerator = () => {
   const [logoShape, setLogoShape] = useState('circle'); // 'circle' or 'square'
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
+  const [currentQRData, setCurrentQRData] = useState('');
+
+  // Regenerate QR code when logo settings change
+  useEffect(() => {
+    if (currentQRData && qrDataUrl) {
+      generateQR(currentQRData);
+    }
+  }, [logoSpace, logoSize, logoShape]);
 
   const qrTypes = [
     {
@@ -78,48 +86,73 @@ const QRGenerator = () => {
   const generateQR = async (inputText: string) => {
     if (!inputText.trim()) {
       setQrDataUrl('');
+      setCurrentQRData('');
       return;
     }
 
+    setCurrentQRData(inputText);
     setIsLoading(true);
     try {
       const canvas = canvasRef.current;
       if (canvas) {
         const size = parseInt(resolution);
-        await QRCode.toCanvas(canvas, inputText, {
+        // Configure QR options based on logo space requirements
+        const qrOptions = {
           width: size,
           margin: 2,
-          errorCorrectionLevel: logoSpace ? 'H' : 'M',
+          errorCorrectionLevel: logoSpace ? 'H' : 'M', // High error correction for logo space
           color: {
-            dark: '#1a1a1a',
+            dark: '#000000',
             light: '#ffffff'
           }
-        });
+        };
         
-        // If logo space is enabled, create a transparent center area
+        await QRCode.toCanvas(canvas, inputText, qrOptions);
+        
+        // If logo space is enabled, create a bordered center area
         if (logoSpace) {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const logoSizePixels = Math.min(canvas.width, canvas.height) * (logoSize[0] / 100);
+            const borderWidth = 4; // Border thickness
             
-            // Clear the center area
-            ctx.globalCompositeOperation = 'destination-out';
+            // Create the logo space with border
+            ctx.save();
+            
+            // First, draw the border
+            ctx.fillStyle = '#000000'; // Black border
             ctx.beginPath();
             
             if (logoShape === 'circle') {
+              // Draw outer circle (border)
+              ctx.arc(centerX, centerY, (logoSizePixels / 2) + borderWidth, 0, 2 * Math.PI);
+              ctx.fill();
+              
+              // Draw inner circle (clear area)
+              ctx.globalCompositeOperation = 'destination-out';
+              ctx.beginPath();
               ctx.arc(centerX, centerY, logoSizePixels / 2, 0, 2 * Math.PI);
+              ctx.fill();
             } else {
               // Square shape
               const halfSize = logoSizePixels / 2;
+              const borderHalfSize = halfSize + borderWidth;
+              
+              // Draw outer square (border)
+              ctx.rect(centerX - borderHalfSize, centerY - borderHalfSize, 
+                      (borderHalfSize * 2), (borderHalfSize * 2));
+              ctx.fill();
+              
+              // Draw inner square (clear area)
+              ctx.globalCompositeOperation = 'destination-out';
+              ctx.beginPath();
               ctx.rect(centerX - halfSize, centerY - halfSize, logoSizePixels, logoSizePixels);
+              ctx.fill();
             }
             
-            ctx.fill();
-            
-            // Reset composite operation
-            ctx.globalCompositeOperation = 'source-over';
+            ctx.restore();
           }
         }
         
