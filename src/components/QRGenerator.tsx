@@ -480,14 +480,14 @@ const QRGenerator = () => {
                        <Slider
                          value={borderThickness}
                          onValueChange={setBorderThickness}
-                         max={8}
+                         max={28}
                          min={1}
                          step={1}
                          className="w-full"
                        />
                        <div className="flex justify-between text-xs text-gray-500">
                          <span>1px</span>
-                         <span>8px</span>
+                         <span>28px</span>
                        </div>
                      </div>
                    )}
