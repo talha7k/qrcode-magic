@@ -26,6 +26,8 @@ const QRGenerator = () => {
   const [logoSpace, setLogoSpace] = useState(false);
   const [logoSize, setLogoSize] = useState([20]); // Percentage of QR code size
   const [logoShape, setLogoShape] = useState('circle'); // 'circle' or 'square'
+  const [showBorder, setShowBorder] = useState(true); // Toggle for border visibility
+  const [borderThickness, setBorderThickness] = useState([2]); // Border thickness in pixels
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
   const [currentQRData, setCurrentQRData] = useState('');
@@ -35,7 +37,7 @@ const QRGenerator = () => {
     if (currentQRData && qrDataUrl) {
       generateQR(currentQRData);
     }
-  }, [logoSpace, logoSize, logoShape]);
+  }, [logoSpace, logoSize, logoShape, showBorder, borderThickness]);
 
   const qrTypes = [
     {
@@ -102,54 +104,68 @@ const QRGenerator = () => {
           margin: 2,
           errorCorrectionLevel: logoSpace ? 'H' : 'M', // High error correction for logo space
           color: {
-            dark: '#000000',
-            light: '#ffffff'
+            dark: '#000000'
+            // No light color specified for transparent background
           }
         };
         
+        // Clear canvas first to ensure transparency
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
         await QRCode.toCanvas(canvas, inputText, qrOptions);
         
-        // If logo space is enabled, create a bordered center area
+        // If logo space is enabled, create a clean center area
         if (logoSpace) {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const logoSizePixels = Math.min(canvas.width, canvas.height) * (logoSize[0] / 100);
-            const borderWidth = 4; // Border thickness
+            const borderWidth = showBorder ? borderThickness[0] : 0;
             
-            // Create the logo space with border
+            // Enable high-quality rendering
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // Save the current state
             ctx.save();
             
-            // First, draw the border
-            ctx.fillStyle = '#000000'; // Black border
-            ctx.beginPath();
-            
             if (logoShape === 'circle') {
-              // Draw outer circle (border)
-              ctx.arc(centerX, centerY, (logoSizePixels / 2) + borderWidth, 0, 2 * Math.PI);
-              ctx.fill();
-              
-              // Draw inner circle (clear area)
+              // Clear the center area first
               ctx.globalCompositeOperation = 'destination-out';
               ctx.beginPath();
-              ctx.arc(centerX, centerY, logoSizePixels / 2, 0, 2 * Math.PI);
+              ctx.arc(centerX, centerY, logoSizePixels / 2 + borderWidth, 0, 2 * Math.PI);
               ctx.fill();
+              
+              // Add border if enabled
+              if (showBorder && borderWidth > 0) {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = borderWidth;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, logoSizePixels / 2 + borderWidth / 2, 0, 2 * Math.PI);
+                ctx.stroke();
+              }
             } else {
               // Square shape
               const halfSize = logoSizePixels / 2;
-              const borderHalfSize = halfSize + borderWidth;
               
-              // Draw outer square (border)
-              ctx.rect(centerX - borderHalfSize, centerY - borderHalfSize, 
-                      (borderHalfSize * 2), (borderHalfSize * 2));
-              ctx.fill();
-              
-              // Draw inner square (clear area)
+              // Clear the center area first
               ctx.globalCompositeOperation = 'destination-out';
-              ctx.beginPath();
-              ctx.rect(centerX - halfSize, centerY - halfSize, logoSizePixels, logoSizePixels);
-              ctx.fill();
+              ctx.fillRect(centerX - halfSize - borderWidth, centerY - halfSize - borderWidth, 
+                          logoSizePixels + (borderWidth * 2), logoSizePixels + (borderWidth * 2));
+              
+              // Add border if enabled
+              if (showBorder && borderWidth > 0) {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = borderWidth;
+                ctx.strokeRect(centerX - halfSize - borderWidth / 2, centerY - halfSize - borderWidth / 2, 
+                              logoSizePixels + borderWidth, logoSizePixels + borderWidth);
+              }
             }
             
             ctx.restore();
@@ -295,7 +311,7 @@ const QRGenerator = () => {
               <div className="bg-gray-50 rounded-lg p-4 space-y-4">
                 <h3 className="text-sm font-semibold text-gray-700 mb-3">Logo Space Customization</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* Logo Size Slider */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-gray-700">
@@ -314,6 +330,43 @@ const QRGenerator = () => {
                       <span>40%</span>
                     </div>
                   </div>
+                  
+                  {/* Border Toggle */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">
+                      Show Border
+                    </Label>
+                    <div className="flex items-center space-x-2 pt-2">
+                      <Switch
+                        checked={showBorder}
+                        onCheckedChange={setShowBorder}
+                      />
+                      <span className="text-xs text-gray-500">
+                        {showBorder ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Border Thickness Slider - Only show when border is enabled */}
+                   {showBorder && (
+                     <div className="space-y-2">
+                       <Label className="text-sm font-medium text-gray-700">
+                         Border: {borderThickness[0]}px thick
+                       </Label>
+                       <Slider
+                         value={borderThickness}
+                         onValueChange={setBorderThickness}
+                         max={8}
+                         min={1}
+                         step={1}
+                         className="w-full"
+                       />
+                       <div className="flex justify-between text-xs text-gray-500">
+                         <span>1px</span>
+                         <span>8px</span>
+                       </div>
+                     </div>
+                   )}
                   
                   {/* Logo Shape Selector */}
                   <div className="space-y-2">
