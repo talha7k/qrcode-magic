@@ -372,51 +372,55 @@ const QRGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen  flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex-grow py-4">
+    <div className="min-h-screen flex items-center justify-center  sm:p-4 overflow-x-hidden">
+      <div className="w-full max-w-[90vw] sm:max-w-2xl md:max-w-4xl lg:max-w-6xl flex-grow py-8">
         
 
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-gray-600 to-gray-800 backdrop-blur-sm mb-8">
+        <Card className="shadow-xl border-0 bg-gradient-to-br from-gray-600 to-gray-800 backdrop-blur-sm mb-8  ">
           <CardHeader>
             <CardTitle className="text-xl text-white text-center">Choose QR Code Type</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
             {/* Settings */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <div className="flex flex-col gap-6">
               {/* Resolution Selector */}
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="flex items-center gap-2">
                   <Settings className="w-4 h-4 text-gray-600" />
                   <span className="text-sm font-medium text-gray-300">Resolution:</span>
                 </div>
-                <Select value={resolution} onValueChange={setResolution}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Select resolution" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {resolutionOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <span className="text-xs text-gray-300">PNG format</span>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+                  <Select value={resolution} onValueChange={setResolution}>
+                    <SelectTrigger className="w-full sm:w-48">
+                      <SelectValue placeholder="Select resolution" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {resolutionOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <span className="text-xs text-gray-300">PNG format</span>
+                </div>
               </div>
               
               {/* Logo Space Toggle */}
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <Label htmlFor="logo-space" className="text-sm font-medium text-gray-300">
                   Logo Space:
                 </Label>
-                <Switch
-                  id="logo-space"
-                  checked={logoSpace}
-                  onCheckedChange={setLogoSpace}
-                />
-                <span className="text-xs text-gray-500">
-                  {logoSpace ? 'Center cleared for logo' : 'Standard QR code'}
-                </span>
+                <div className="flex items-center gap-3">
+                  <Switch
+                    id="logo-space"
+                    checked={logoSpace}
+                    onCheckedChange={setLogoSpace}
+                  />
+                  <span className="text-xs text-gray-500">
+                    {logoSpace ? 'Center cleared for logo' : 'Standard QR code'}
+                  </span>
+                </div>
               </div>
             </div>
             
@@ -425,7 +429,7 @@ const QRGenerator = () => {
               <div className="bg-gray-300 rounded-lg p-4 space-y-4">
                 <h3 className="text-sm font-semibold text-gray-800 mb-3">Logo Space Customization</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                   {/* Logo Size Slider */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-gray-700">
@@ -461,9 +465,25 @@ const QRGenerator = () => {
                     </div>
                   </div>
                   
+                  {/* Logo Shape Selector */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">
+                      Shape
+                    </Label>
+                    <Select value={logoShape} onValueChange={setLogoShape}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select shape" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="circle">Circle</SelectItem>
+                        <SelectItem value="square">Square</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
                   {/* Border Thickness Slider - Only show when border is enabled */}
                    {showBorder && (
-                     <div className="space-y-2">
+                     <div className="space-y-2 sm:col-span-2 lg:col-span-1">
                        <Label className="text-sm font-medium text-gray-700">
                          Border: {borderThickness[0]}px thick
                        </Label>
@@ -481,22 +501,6 @@ const QRGenerator = () => {
                        </div>
                      </div>
                    )}
-                  
-                  {/* Logo Shape Selector */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
-                      Shape
-                    </Label>
-                    <Select value={logoShape} onValueChange={setLogoShape}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select shape" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="circle">Circle</SelectItem>
-                        <SelectItem value="square">Square</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
                 
                 <div className="text-xs text-gray-600 bg-blue-50 p-3 rounded border-l-4 border-blue-400">
@@ -506,8 +510,8 @@ const QRGenerator = () => {
             )}
 
             {/* Horizontal Scrollable Cards */}
-            <div className="overflow-x-auto ">
-              <div className="flex gap-6 min-w-max px-4 py-2">
+            <div className="overflow-x-auto  pb-2">
+              <div className="flex gap-4 sm:gap-6 px-2 sm:px-4 py-2" style={{minWidth: 'max-content'}}>
                 {qrTypes.map((type) => (
                   <QRTypeCard
                     key={type.id}
@@ -523,14 +527,14 @@ const QRGenerator = () => {
 
             {/* Saved Entries Management */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <h3 className="text-lg font-semibold text-white">Saved {qrTypes.find(t => t.id === activeType)?.title} QR Codes</h3>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <Button
                     onClick={saveCurrentEntry}
                     variant="outline"
                     size="sm"
-                    className="border-green-200 hover:border-green-400 hover:bg-green-50"
+                    className="border-green-200 hover:border-green-400 hover:bg-green-50 w-full sm:w-auto"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     Save Current
@@ -539,7 +543,7 @@ const QRGenerator = () => {
                     onClick={() => setShowSavedEntries(!showSavedEntries)}
                     variant="outline"
                     size="sm"
-                    className="border-blue-200 hover:border-blue-400 hover:bg-blue-50"
+                    className="border-blue-200 hover:border-blue-400 hover:bg-blue-50 w-full sm:w-auto"
                   >
                     <FolderOpen className="w-4 h-4 mr-2" />
                     {showSavedEntries ? 'Hide' : 'Show'} Saved ({getCurrentTypeSavedEntries().length})
@@ -585,21 +589,21 @@ const QRGenerator = () => {
             </div>
 
             {/* Form and QR Code Display */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+              <div className="space-y-4 order-2 xl:order-1">
                 {renderForm()}
               </div>
 
-              <div className="flex flex-col items-center space-y-4">
-                <div className="relative">
+              <div className="flex flex-col items-center space-y-4 order-1 xl:order-2">
+                <div className="relative w-full max-w-xs sm:max-w-sm">
                   <canvas
                     ref={canvasRef}
-                    className={`border-2 border-gray-200 rounded-lg transition-all duration-300 ${
+                    className={`border-2 border-gray-200 rounded-lg transition-all duration-300 w-full h-auto ${
                       qrDataUrl ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                     }`}
                     width={parseInt(resolution)}
                     height={parseInt(resolution)}
-                    style={{ maxWidth: '256px', maxHeight: '256px', width: 'auto', height: 'auto' }}
+                    style={{ maxWidth: '100%', height: 'auto', aspectRatio: '1/1' }}
                   />
                   {isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-lg">
@@ -607,10 +611,10 @@ const QRGenerator = () => {
                     </div>
                   )}
                   {!qrDataUrl && !isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300" style={{ width: '256px', height: '256px' }}>
-                      <div className="text-center text-gray-400">
-                        <QrCode className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                        <p>Fill the form to generate QR code</p>
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 aspect-square">
+                      <div className="text-center text-gray-400 p-4">
+                        <QrCode className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm sm:text-base">Fill the form to generate QR code</p>
                         <p className="text-xs mt-1">{resolution}x{resolution} PNG</p>
                       </div>
                     </div>
@@ -618,10 +622,10 @@ const QRGenerator = () => {
                 </div>
 
                 {qrDataUrl && (
-                  <div className="flex gap-3 animate-in fade-in duration-300">
+                  <div className="flex flex-col sm:flex-row gap-3 animate-in fade-in duration-300 w-full max-w-xs sm:max-w-sm">
                     <Button
                       onClick={downloadQR}
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto flex-1"
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Download PNG
@@ -629,7 +633,7 @@ const QRGenerator = () => {
                     <Button
                       onClick={copyToClipboard}
                       variant="outline"
-                      className="border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-300"
+                      className="border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-300 w-full sm:w-auto flex-1"
                     >
                       {copied ? (
                         <>
