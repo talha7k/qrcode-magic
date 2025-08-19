@@ -78,8 +78,8 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 97.5%;
+    --input: 217.2 32.6% 97.5%;
     --ring: 212.7 26.8% 83.9%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -99,5 +99,29 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Custom Scrollbar Styles */
+  /* For Webkit browsers (Chrome, Safari) */
+  ::-webkit-scrollbar {
+    width: 8px; /* width of the scrollbar */
+    height: 8px; /* height of the scrollbar for horizontal scrollbars */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* color of the track */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #8b5cf6; /* color of the scroll thumb (purple) */
+    border-radius: 10px; /* roundness of the scroll thumb */
+    border: 2px solid transparent; /* creates padding around scroll thumb */
+    background-clip: content-box; /* ensures border doesn't cover thumb */
+  }
+
+  /* For Firefox */
+  * {
+    scrollbar-width: thin; /* "auto" or "thin" */
+    scrollbar-color: #8b5cf6 transparent; /* thumb color track color */
   }
 }

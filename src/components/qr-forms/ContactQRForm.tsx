@@ -368,10 +368,10 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
           </Button>
         </div>
         {addresses.map((address, index) => (
-          <div key={address.id} className="space-y-2 p-4 border rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Label className="text-sm font-medium">Address {index + 1}</Label>
+          <div key={address.id} className="space-y-2 p-4 border rounded-lg ">
+            <div className="flex items-center justify-between  ">
+              <div className="flex items-center gap-4 justify-between w-full ">
+                <Label className="text-sm font-medium w-full">Address {index + 1}</Label>
                 <Select
                   value={address.type}
                   onValueChange={(value) => updateAddress(address.id, 'type', value)}

@@ -20,7 +20,7 @@ const QRTypeCard: React.FC<QRTypeCardProps> = ({
 }) => {
   return (
     <Card 
-      className={`min-w-[280px] cursor-pointer transition-all duration-300 hover:shadow-lg ${
+      className={`min-w-[280px] bg-gray-300 cursor-pointer transition-all duration-300 hover:shadow-lg ${
         isActive 
           ? 'ring-2 ring-purple-500 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200' 
           : 'hover:border-purple-200 hover:bg-purple-50/50'

@@ -387,7 +387,7 @@ const QRGenerator = () => {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <Settings className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-700">Resolution:</span>
+                  <span className="text-sm font-medium text-gray-300">Resolution:</span>
                 </div>
                 <Select value={resolution} onValueChange={setResolution}>
                   <SelectTrigger className="w-48">
@@ -401,12 +401,12 @@ const QRGenerator = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                <span className="text-xs text-gray-500">PNG format</span>
+                <span className="text-xs text-gray-300">PNG format</span>
               </div>
               
               {/* Logo Space Toggle */}
               <div className="flex items-center gap-3">
-                <Label htmlFor="logo-space" className="text-sm font-medium text-gray-700">
+                <Label htmlFor="logo-space" className="text-sm font-medium text-gray-300">
                   Logo Space:
                 </Label>
                 <Switch
@@ -422,8 +422,8 @@ const QRGenerator = () => {
             
             {/* Logo Customization Controls */}
             {logoSpace && (
-              <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Logo Space Customization</h3>
+              <div className="bg-gray-300 rounded-lg p-4 space-y-4">
+                <h3 className="text-sm font-semibold text-gray-800 mb-3">Logo Space Customization</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* Logo Size Slider */}
