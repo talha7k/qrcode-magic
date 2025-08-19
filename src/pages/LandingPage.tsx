@@ -18,7 +18,7 @@ const LandingPage: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center"
+      className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 flex flex-col items-center"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -27,14 +27,14 @@ const LandingPage: React.FC = () => {
       <div className="flex flex-col items-center mt-4 justify-center flex-grow w-full p-8">
 
       <motion.h1
-        className="text-5xl md:text-7xl font-extrabold text-gray-900 text-center mb-6 leading-tight"
+        className="text-5xl md:text-7xl font-extrabold text-white text-center mb-6 leading-tight"
         variants={itemVariants}
       >
         QR Code Magic
       </motion.h1>
 
       <motion.p
-        className="text-xl md:text-2xl text-gray-700 text-center max-w-3xl mb-10"
+        className="text-xl md:text-2xl text-gray-300 text-center max-w-3xl mb-10"
         variants={itemVariants}
       >
         Your ultimate solution for creating highly customizable, static, and permanent QR codes.
@@ -45,40 +45,40 @@ const LandingPage: React.FC = () => {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full mb-12"
         variants={containerVariants}
       >
-        <motion.div className="bg-white rounded-xl shadow-lg p-6" variants={itemVariants}>
-          <HardDrive className="h-10 w-10 text-blue-500 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">Local Storage Persistence</h2>
-          <p className="text-gray-600">All your QR code data is saved directly in your browser, ensuring your work is always accessible.</p>
+        <motion.div className="bg-gray-700 rounded-xl shadow-lg p-6" variants={itemVariants}>
+          <HardDrive className="h-10 w-10 text-blue-400 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Local Storage Persistence</h2>
+          <p className="text-gray-300">All your QR code data is saved directly in your browser, ensuring your work is always accessible.</p>
         </motion.div>
 
-        <motion.div className="bg-white rounded-xl shadow-lg p-6" variants={itemVariants}>
-          <Save className="h-10 w-10 text-green-500 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">Multiple Saved Entries</h2>
-          <p className="text-gray-600">Manage multiple QR code contents for each type, keeping your projects organized.</p>
+        <motion.div className="bg-gray-700 rounded-xl shadow-lg p-6" variants={itemVariants}>
+          <Save className="h-10 w-10 text-green-400 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Multiple Saved Entries</h2>
+          <p className="text-gray-300">Manage multiple QR code contents for each type, keeping your projects organized.</p>
         </motion.div>
 
-        <motion.div className="bg-white rounded-xl shadow-lg p-6" variants={itemVariants}>
-          <History className="h-10 w-10 text-purple-500 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">Session Restoration</h2>
-          <p className="text-gray-600">Never lose your progress. Your current form data and settings are auto-saved and restored.</p>
+        <motion.div className="bg-gray-700 rounded-xl shadow-lg p-6" variants={itemVariants}>
+          <History className="h-10 w-10 text-purple-400 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Session Restoration</h2>
+          <p className="text-gray-300">Never lose your progress. Your current form data and settings are auto-saved and restored.</p>
         </motion.div>
 
-        <motion.div className="bg-white rounded-xl shadow-lg p-6" variants={itemVariants}>
-          <LayoutDashboard className="h-10 w-10 text-red-500 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">Intuitive Management UI</h2>
-          <p className="text-gray-600">Effortlessly save, load, and delete your QR code entries with a user-friendly interface.</p>
+        <motion.div className="bg-gray-700 rounded-xl shadow-lg p-6" variants={itemVariants}>
+          <LayoutDashboard className="h-10 w-10 text-red-400 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Intuitive Management UI</h2>
+          <p className="text-gray-300">Effortlessly save, load, and delete your QR code entries with a user-friendly interface.</p>
         </motion.div>
 
-        <motion.div className="bg-white rounded-xl shadow-lg p-6" variants={itemVariants}>
-          <Zap className="h-10 w-10 text-yellow-500 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">Auto-Save Functionality</h2>
-          <p className="text-gray-600">Real-time auto-saving prevents data loss, giving you peace of mind as you create.</p>
+        <motion.div className="bg-gray-700 rounded-xl shadow-lg p-6" variants={itemVariants}>
+          <Zap className="h-10 w-10 text-yellow-400 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Auto-Save Functionality</h2>
+          <p className="text-gray-300">Real-time auto-saving prevents data loss, giving you peace of mind as you create.</p>
         </motion.div>
 
-        <motion.div className="bg-white rounded-xl shadow-lg p-6" variants={itemVariants}>
-          <Palette className="h-10 w-10 text-pink-500 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">Customizable & Permanent</h2>
-          <p className="text-gray-600">Add logos, adjust resolution, and customize borders. Our static QR codes work forever.</p>
+        <motion.div className="bg-gray-700 rounded-xl shadow-lg p-6" variants={itemVariants}>
+          <Palette className="h-10 w-10 text-pink-400 mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Customizable & Permanent</h2>
+          <p className="text-gray-300">Add logos, adjust resolution, and customize borders. Our static QR codes work forever.</p>
         </motion.div>
       </motion.div>
 
@@ -95,10 +95,10 @@ const LandingPage: React.FC = () => {
       </motion.div>
 
       <motion.p
-        className="text-sm text-gray-500 mt-12 text-center"
+        className="text-sm text-gray-400 mt-12 text-center"
         variants={itemVariants}
       >
-        A project by <a href="https://dijitize.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Dijitize.com</a>
+        A project by <a href="https://dijitize.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Dijitize.com</a>
       </motion.p>
     </motion.div>
   );

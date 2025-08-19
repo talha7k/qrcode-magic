@@ -368,7 +368,7 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
           </Button>
         </div>
         {addresses.map((address, index) => (
-          <div key={address.id} className="space-y-2 p-4 border rounded-lg ">
+          <div key={address.id} className="space-y-2 p-4 border-gray-800 border rounded-lg ">
             <div className="flex items-center justify-between  ">
               <div className="flex items-center gap-4 justify-between w-full ">
                 <Label className="text-sm font-medium w-full">Address {index + 1}</Label>
