@@ -241,7 +241,7 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
               <select
                 value={phone.type}
                 onChange={(e) => updatePhoneNumber(phone.id, 'type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-gray-400 text-gray-900"
               >
                 <option value="CELL">Mobile</option>
                 <option value="WORK">Work</option>
@@ -302,7 +302,7 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
               <select
                 value={email.type}
                 onChange={(e) => updateEmail(email.id, 'type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-gray-400 text-gray-900"
               >
                 <option value="WORK">Work</option>
                 <option value="HOME">Home</option>
@@ -366,7 +366,7 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
                 <select
                   value={address.type}
                   onChange={(e) => updateAddress(address.id, 'type', e.target.value)}
-                  className="px-2 py-1 border border-gray-300 rounded text-xs"
+                  className="px-2 py-1 border border-gray-300 rounded text-xs bg-gray-400 text-gray-900"
                 >
                   <option value="HOME">Home</option>
                   <option value="WORK">Work</option>
@@ -418,7 +418,7 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
         ))}
       </div>
       
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-200">
         Fill in contact details to generate a vCard QR code. Use the + buttons to add multiple phone numbers, emails, and addresses. Select types for better organization.
       </p>
     </div>

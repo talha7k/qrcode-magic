@@ -372,23 +372,13 @@ const QRGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mb-4">
-            <QrCode className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-            Comprehensive QR Code Generator
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Create QR codes for URLs, text, contact info, WiFi passwords, and more!
-          </p>
-        </div>
+    <div className="min-h-screen  flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl flex-grow py-4">
+        
 
-        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="shadow-xl border-0 bg-gradient-to-br from-gray-600 to-gray-800 backdrop-blur-sm mb-8">
           <CardHeader>
-            <CardTitle className="text-xl text-gray-800 text-center">Choose QR Code Type</CardTitle>
+            <CardTitle className="text-xl text-white text-center">Choose QR Code Type</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
             {/* Settings */}
@@ -516,7 +506,7 @@ const QRGenerator = () => {
             )}
 
             {/* Horizontal Scrollable Cards */}
-            <div className="overflow-x-auto scrollbar-hide">
+            <div className="overflow-x-auto ">
               <div className="flex gap-6 min-w-max px-4 py-2">
                 {qrTypes.map((type) => (
                   <QRTypeCard
@@ -534,7 +524,7 @@ const QRGenerator = () => {
             {/* Saved Entries Management */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-800">Saved {qrTypes.find(t => t.id === activeType)?.title} QR Codes</h3>
+                <h3 className="text-lg font-semibold text-white">Saved {qrTypes.find(t => t.id === activeType)?.title} QR Codes</h3>
                 <div className="flex gap-2">
                   <Button
                     onClick={saveCurrentEntry}
@@ -566,7 +556,7 @@ const QRGenerator = () => {
                       {getCurrentTypeSavedEntries().map((entry) => (
                         <div key={entry.id} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-purple-300 transition-colors">
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-gray-800 truncate">{entry.name}</h4>
+                            <h4 className="font-medium text-white truncate">{entry.name}</h4>
                             <Button
                               onClick={() => deleteSavedEntry(entry.id)}
                               variant="ghost"
