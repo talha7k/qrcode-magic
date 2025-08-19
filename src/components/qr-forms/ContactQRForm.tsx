@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus } from 'lucide-react';
 
@@ -238,16 +239,20 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
               />
             </div>
             <div className="w-24">
-              <select
+              <Select
                 value={phone.type}
-                onChange={(e) => updatePhoneNumber(phone.id, 'type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-gray-400 text-gray-900"
+                onValueChange={(value) => updatePhoneNumber(phone.id, 'type', value)}
               >
-                <option value="CELL">Mobile</option>
-                <option value="WORK">Work</option>
-                <option value="HOME">Home</option>
-                <option value="FAX">Fax</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="CELL">Mobile</SelectItem>
+                  <SelectItem value="WORK">Work</SelectItem>
+                  <SelectItem value="HOME">Home</SelectItem>
+                  <SelectItem value="FAX">Fax</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             {phoneNumbers.length > 1 && (
               <Button
@@ -299,15 +304,19 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
               />
             </div>
             <div className="w-24">
-              <select
+              <Select
                 value={email.type}
-                onChange={(e) => updateEmail(email.id, 'type', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-gray-400 text-gray-900"
+                onValueChange={(value) => updateEmail(email.id, 'type', value)}
               >
-                <option value="WORK">Work</option>
-                <option value="HOME">Home</option>
-                <option value="OTHER">Other</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="WORK">Work</SelectItem>
+                  <SelectItem value="HOME">Home</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             {emails.length > 1 && (
               <Button
@@ -363,15 +372,19 @@ const ContactQRForm: React.FC<ContactQRFormProps> = ({ onGenerate, formData, onF
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Label className="text-sm font-medium">Address {index + 1}</Label>
-                <select
+                <Select
                   value={address.type}
-                  onChange={(e) => updateAddress(address.id, 'type', e.target.value)}
-                  className="px-2 py-1 border border-gray-300 rounded text-xs bg-gray-400 text-gray-900"
-                >
-                  <option value="HOME">Home</option>
-                  <option value="WORK">Work</option>
-                  <option value="OTHER">Other</option>
-                </select>
+                  onValueChange={(value) => updateAddress(address.id, 'type', value)}
+                 >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="HOME">Home</SelectItem>
+                    <SelectItem value="WORK">Work</SelectItem>
+                    <SelectItem value="OTHER">Other</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               {addresses.length > 1 && (
                 <Button
