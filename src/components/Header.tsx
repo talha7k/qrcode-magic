@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from 'next-themes';
@@ -7,10 +7,16 @@ import { QrCode, Sun, Moon } from 'lucide-react';
 
 const Header: React.FC<{ showAppButton?: boolean }> = ({ showAppButton = true }) => {
   const { theme, setTheme } = useTheme();
-  const isDark = theme === 'dark';
+  const [mounted, setMounted] = useState(false);
+
+  // useEffect only runs on the client, so we can safely show the theme toggle
+  // after the component has mounted to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
-    setTheme(isDark ? 'light' : 'dark');
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -30,9 +36,9 @@ const Header: React.FC<{ showAppButton?: boolean }> = ({ showAppButton = true })
           size="icon"
           onClick={toggleTheme}
           className="text-primary-foreground hover:bg-primary-foreground/20"
-          title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
         >
-          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          {mounted && (theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />)}
         </Button>
         {showAppButton && (
           <Link to="/app">
