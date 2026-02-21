@@ -132,24 +132,28 @@
   /* Custom Scrollbar Styles */
   /* For Webkit browsers (Chrome, Safari) */
   ::-webkit-scrollbar {
-    width: 8px; /* width of the scrollbar */
-    height: 8px; /* height of the scrollbar for horizontal scrollbars */
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(var(--scrollbar-track)); /* color of the track */
+    background: hsl(var(--muted));
+    border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--scrollbar-thumb)); /* color of the scroll thumb */
-    border-radius: 10px; /* roundness of the scroll thumb */
-    border: 2px solid transparent; /* creates padding around scroll thumb */
-    background-clip: content-box; /* ensures border doesn't cover thumb */
+    background: hsl(var(--scrollbar-thumb));
+    border-radius: 10px;
+    border: 2px solid hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(262 83% 65%);
   }
 
   /* For Firefox */
   * {
-    scrollbar-width: thin; /* "auto" or "thin" */
-    scrollbar-color: hsl(var(--scrollbar-thumb)) hsl(var(--scrollbar-track)); /* thumb color track color */
+    scrollbar-width: auto;
+    scrollbar-color: hsl(var(--scrollbar-thumb)) hsl(var(--muted));
   }
 }
