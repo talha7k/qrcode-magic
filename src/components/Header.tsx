@@ -10,7 +10,7 @@ const Header: React.FC<{ showAppButton?: boolean }> = ({ showAppButton = true })
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg flex justify-between items-center"
+      className="w-full p-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg flex justify-between items-center"
     >
       <Link to="/" className="flex items-center space-x-2">
         <QrCode className="h-8 w-8" />
@@ -18,7 +18,7 @@ const Header: React.FC<{ showAppButton?: boolean }> = ({ showAppButton = true })
       </Link>
       {showAppButton && (
         <Link to="/app">
-          <Button className="bg-white text-blue-600 hover:bg-gray-100">
+          <Button className="bg-card text-primary hover:bg-secondary">
             Go to App
           </Button>
         </Link>

@@ -376,9 +376,9 @@ const QRGenerator = () => {
       <div className="w-full max-w-[90vw] sm:max-w-2xl md:max-w-4xl lg:max-w-6xl flex-grow py-8">
         
 
-        <Card className="shadow-xl border-0 bg-gradient-to-br from-gray-600 to-gray-800 backdrop-blur-sm mb-8  ">
+        <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-secondary backdrop-blur-sm mb-8  ">
           <CardHeader>
-            <CardTitle className="text-xl text-white text-center">Choose QR Code Type</CardTitle>
+            <CardTitle className="text-xl text-foreground text-center">Choose QR Code Type</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
             {/* Settings */}
@@ -386,8 +386,8 @@ const QRGenerator = () => {
               {/* Resolution Selector */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-300">Resolution:</span>
+                  <Settings className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm font-medium text-muted-foreground">Resolution:</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
                   <Select value={resolution} onValueChange={setResolution}>
@@ -402,13 +402,13 @@ const QRGenerator = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <span className="text-xs text-gray-300">PNG format</span>
+                  <span className="text-xs text-muted-foreground">PNG format</span>
                 </div>
               </div>
               
               {/* Logo Space Toggle */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <Label htmlFor="logo-space" className="text-sm font-medium text-gray-300">
+                <Label htmlFor="logo-space" className="text-sm font-medium text-muted-foreground">
                   Logo Space:
                 </Label>
                 <div className="flex items-center gap-3">
@@ -417,7 +417,7 @@ const QRGenerator = () => {
                     checked={logoSpace}
                     onCheckedChange={setLogoSpace}
                   />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {logoSpace ? 'Center cleared for logo' : 'Standard QR code'}
                   </span>
                 </div>
@@ -426,13 +426,13 @@ const QRGenerator = () => {
             
             {/* Logo Customization Controls */}
             {logoSpace && (
-              <div className="bg-gray-300 rounded-lg p-4 space-y-4">
-                <h3 className="text-sm font-semibold text-gray-800 mb-3">Logo Space Customization</h3>
+              <div className="bg-secondary rounded-lg p-4 space-y-4">
+                <h3 className="text-sm font-semibold text-foreground mb-3">Logo Space Customization</h3>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                   {/* Logo Size Slider */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
+                    <Label className="text-sm font-medium text-muted-foreground">
                       Size: {logoSize[0]}% of QR code
                     </Label>
                     <Slider
@@ -443,7 +443,7 @@ const QRGenerator = () => {
                       step={1}
                       className="w-full"
                     />
-                    <div className="flex justify-between text-xs text-gray-500">
+                    <div className="flex justify-between text-xs text-muted-foreground">
                       <span>10%</span>
                       <span>40%</span>
                     </div>
@@ -451,7 +451,7 @@ const QRGenerator = () => {
                   
                   {/* Border Toggle */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
+                    <Label className="text-sm font-medium text-muted-foreground">
                       Show Border
                     </Label>
                     <div className="flex items-center space-x-2 pt-2">
@@ -459,7 +459,7 @@ const QRGenerator = () => {
                         checked={showBorder}
                         onCheckedChange={setShowBorder}
                       />
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {showBorder ? 'Enabled' : 'Disabled'}
                       </span>
                     </div>
@@ -467,7 +467,7 @@ const QRGenerator = () => {
                   
                   {/* Logo Shape Selector */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">
+                    <Label className="text-sm font-medium text-muted-foreground">
                       Shape
                     </Label>
                     <Select value={logoShape} onValueChange={setLogoShape}>
@@ -482,11 +482,11 @@ const QRGenerator = () => {
                   </div>
                   
                   {/* Border Thickness Slider - Only show when border is enabled */}
-                   {showBorder && (
-                     <div className="space-y-2 sm:col-span-2 lg:col-span-1">
-                       <Label className="text-sm font-medium text-gray-700">
-                         Border: {borderThickness[0]}px thick
-                       </Label>
+                     {showBorder && (
+                      <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Border: {borderThickness[0]}px thick
+                        </Label>
                        <Slider
                          value={borderThickness}
                          onValueChange={setBorderThickness}
@@ -495,15 +495,15 @@ const QRGenerator = () => {
                          step={1}
                          className="w-full"
                        />
-                       <div className="flex justify-between text-xs text-gray-500">
-                         <span>1px</span>
-                         <span>28px</span>
-                       </div>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>1px</span>
+                          <span>28px</span>
+                        </div>
                      </div>
                    )}
                 </div>
                 
-                <div className="text-xs text-gray-600 bg-blue-50 p-3 rounded border-l-4 border-blue-400">
+                <div className="text-xs text-muted-foreground bg-info/10 p-3 rounded border-l-4 border-info">
                   <strong>Tip:</strong> Use a graphics editor to add your logo to the transparent center area after downloading the QR code.
                 </div>
               </div>
@@ -528,13 +528,13 @@ const QRGenerator = () => {
             {/* Saved Entries Management */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h3 className="text-lg font-semibold text-white">Saved {qrTypes.find(t => t.id === activeType)?.title} QR Codes</h3>
+                <h3 className="text-lg font-semibold text-foreground">Saved {qrTypes.find(t => t.id === activeType)?.title} QR Codes</h3>
                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <Button
                     onClick={saveCurrentEntry}
                     variant="outline"
                     size="sm"
-                    className="border-green-200 hover:border-green-400 hover:bg-green-50 w-full sm:w-auto"
+                    className="border-success/30 hover:border-success hover:bg-success/10 w-full sm:w-auto"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     Save Current
@@ -543,7 +543,7 @@ const QRGenerator = () => {
                     onClick={() => setShowSavedEntries(!showSavedEntries)}
                     variant="outline"
                     size="sm"
-                    className="border-blue-200 hover:border-blue-400 hover:bg-blue-50 w-full sm:w-auto"
+                    className="border-info/30 hover:border-info hover:bg-info/10 w-full sm:w-auto"
                   >
                     <FolderOpen className="w-4 h-4 mr-2" />
                     {showSavedEntries ? 'Hide' : 'Show'} Saved ({getCurrentTypeSavedEntries().length})
@@ -552,31 +552,31 @@ const QRGenerator = () => {
               </div>
               
               {showSavedEntries && (
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-muted rounded-lg p-4">
                   {getCurrentTypeSavedEntries().length === 0 ? (
-                    <p className="text-gray-500 text-center py-4">No saved {qrTypes.find(t => t.id === activeType)?.title.toLowerCase()} QR codes yet.</p>
+                    <p className="text-muted-foreground text-center py-4">No saved {qrTypes.find(t => t.id === activeType)?.title.toLowerCase()} QR codes yet.</p>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {getCurrentTypeSavedEntries().map((entry) => (
-                        <div key={entry.id} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-purple-300 transition-colors">
+                        <div key={entry.id} className="bg-card rounded-lg p-3 border border-input hover:border-primary/40 transition-colors">
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-white truncate">{entry.name}</h4>
+                            <h4 className="font-medium text-foreground truncate">{entry.name}</h4>
                             <Button
                               onClick={() => deleteSavedEntry(entry.id)}
                               variant="ghost"
                               size="sm"
-                              className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                              className="h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                             >
                               <Trash2 className="w-3 h-3" />
                             </Button>
                           </div>
-                          <p className="text-xs text-gray-500 mb-3">
+                          <p className="text-xs text-muted-foreground mb-3">
                             Created: {new Date(entry.createdAt).toLocaleDateString()}
                           </p>
                           <Button
                             onClick={() => loadSavedEntry(entry)}
                             size="sm"
-                            className="w-full bg-purple-600 hover:bg-purple-700"
+                            className="w-full bg-primary hover:bg-primary/90"
                           >
                             Load
                           </Button>
@@ -598,7 +598,7 @@ const QRGenerator = () => {
                 <div className="relative w-full max-w-xs sm:max-w-sm">
                   <canvas
                     ref={canvasRef}
-                    className={`border-2 border-gray-200 rounded-lg transition-all duration-300 w-full h-auto ${
+                    className={`border-2 border-input rounded-lg transition-all duration-300 w-full h-auto ${
                       qrDataUrl ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                     }`}
                     width={parseInt(resolution)}
@@ -606,13 +606,13 @@ const QRGenerator = () => {
                     style={{ maxWidth: '100%', height: 'auto', aspectRatio: '1/1' }}
                   />
                   {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-lg">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-card/80 rounded-lg">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     </div>
                   )}
                   {!qrDataUrl && !isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 aspect-square">
-                      <div className="text-center text-gray-400 p-4">
+                    <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg border-2 border-dashed border-input aspect-square">
+                      <div className="text-center text-muted-foreground p-4">
                         <QrCode className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
                         <p className="text-sm sm:text-base">Fill the form to generate QR code</p>
                         <p className="text-xs mt-1">{resolution}x{resolution} PNG</p>
@@ -625,7 +625,7 @@ const QRGenerator = () => {
                   <div className="flex flex-col sm:flex-row gap-3 animate-in fade-in duration-300 w-full max-w-xs sm:max-w-sm">
                     <Button
                       onClick={downloadQR}
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto flex-1"
+                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/90 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto flex-1"
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Download PNG
@@ -633,11 +633,11 @@ const QRGenerator = () => {
                     <Button
                       onClick={copyToClipboard}
                       variant="outline"
-                      className="border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-300 w-full sm:w-auto flex-1"
+                      className="border-2 border-primary/30 hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 w-full sm:w-auto flex-1"
                     >
                       {copied ? (
                         <>
-                          <Check className="w-4 h-4 mr-2 text-green-600" />
+                          <Check className="w-4 h-4 mr-2 text-success" />
                           Copied!
                         </>
                       ) : (
@@ -654,7 +654,7 @@ const QRGenerator = () => {
           </CardContent>
         </Card>
 
-        <div className="text-center mt-8 text-gray-500">
+        <div className="text-center mt-8 text-muted-foreground">
           <p className="text-sm">
             Generate high-quality PNG QR codes for any purpose - share instantly and securely!
           </p>
