@@ -1,6 +1,8 @@
+"use client"
+
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { QrCode, Sun, Moon } from 'lucide-react';
@@ -26,7 +28,7 @@ const Header: React.FC<{ showAppButton?: boolean }> = ({ showAppButton = true })
       transition={{ duration: 0.5 }}
       className="w-full p-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg flex justify-between items-center"
     >
-      <Link to="/" className="flex items-center space-x-2">
+      <Link href="/" className="flex items-center space-x-2">
         <QrCode className="h-8 w-8" />
         <h1 className="text-2xl font-bold">QR Code Magic</h1>
       </Link>
@@ -41,7 +43,7 @@ const Header: React.FC<{ showAppButton?: boolean }> = ({ showAppButton = true })
           {mounted && (theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />)}
         </Button>
         {showAppButton && (
-          <Link to="/app">
+          <Link href="/app">
             <Button className="bg-card text-primary hover:bg-secondary">
               Go to App
             </Button>

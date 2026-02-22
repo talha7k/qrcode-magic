@@ -1,11 +1,13 @@
+"use client";
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import { HardDrive, Save, History, LayoutDashboard, Zap, Palette } from 'lucide-react';
 
-const LandingPage: React.FC = () => {
+export default function Home() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
@@ -82,7 +84,7 @@ const LandingPage: React.FC = () => {
         </motion.div>
 
         <motion.div variants={itemVariants} className="mb-8">
-          <Link to="/app">
+          <Link href="/app">
             <Button
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3 px-8 rounded-full text-lg shadow-lg transform transition duration-300 hover:scale-105"
             >
@@ -100,6 +102,4 @@ const LandingPage: React.FC = () => {
       </motion.div>
     </div>
   );
-};
-
-export default LandingPage;
+}
